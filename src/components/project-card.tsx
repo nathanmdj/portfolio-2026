@@ -1,5 +1,6 @@
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { AskAssistantButton } from "@/components/assistant/assistant-context";
+import { ProjectThumbnail } from "@/components/project-thumbnail";
 import { Card } from "@/components/ui/card";
 import { Tag } from "@/components/ui/tag";
 import type { LayerId, Project } from "@/content/profile";
@@ -56,8 +57,10 @@ export function ProjectCard({ project }: { project: Project }) {
       aria-labelledby={titleId}
       interactive
       deep={reachesPastFloor}
-      className="flex h-full scroll-mt-24 flex-col gap-4"
+      className="group/card flex h-full scroll-mt-24 flex-col gap-4"
     >
+      <ProjectThumbnail project={project} />
+
       <div className="flex items-center justify-between gap-3">
         <span
           className={cx(
