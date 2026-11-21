@@ -3,6 +3,7 @@ import govContractDiscovery from "@/assets/projects/gov-contract-discovery.png";
 import pisoWifiVending from "@/assets/projects/piso-wifi-vending.png";
 import quantTradingPlatform from "@/assets/projects/quant-trading-platform.jpg";
 import regulatoryIntelligenceApi from "@/assets/projects/regulatory-intelligence-api.png";
+import seatReservationSaas from "@/assets/projects/seat-reservation-saas.png";
 
 /**
  * Card thumbnails, keyed by project slug. Kept out of profile.ts because that
@@ -14,4 +15,5 @@ export const projectThumbnails: Readonly<Record<string, StaticImageData>> = {
   "piso-wifi-vending": pisoWifiVending,
   "quant-trading-platform": quantTradingPlatform,
   "regulatory-intelligence-api": regulatoryIntelligenceApi,
+  "seat-reservation-saas": seatReservationSaas,
 };
