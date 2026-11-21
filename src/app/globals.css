@@ -1,26 +1,198 @@
 @import "tailwindcss";
 
+/*
+ * Palette: deep slate surfaces, crisp hairline borders, one green accent.
+ * The site is dark only. Green (--accent) passes 4.5:1 as text on every
+ * surface below; text placed on a green fill uses --on-accent.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0f172a;
+  --background-raised: #111a2e;
+  --background-inset: #0b1222;
+  --surface: #1b2336;
+  --surface-raised: #272f42;
+  /* Header and footer strips of framed panels (stack figure, assistant). */
+  --surface-strip: #182032;
+  --foreground: #f8fafc;
+  --foreground-soft: #cbd5e1;
+  --muted: #94a3b8;
+  --border-soft: #1e293b;
+  --border: #334155;
+  --border-strong: #475569;
+  --accent: #22c55e;
+  --accent-hover: #4ade80;
+  --on-accent: #0f172a;
+  --accent-soft: rgb(34 197 94 / 0.1);
+  --accent-line: rgb(34 197 94 / 0.35);
+  --warn: #fbbf24;
+  --danger: #f87171;
+  --shadow-card:
+    inset 0 1px 0 rgb(255 255 255 / 0.03), 0 1px 2px rgb(0 0 0 / 0.3),
+    0 12px 32px -16px rgb(0 0 0 / 0.6);
+  --shadow-float: 0 24px 64px -16px rgb(0 0 0 / 0.75), 0 0 0 1px rgb(34 197 94 / 0.06);
+  --shadow-accent: 0 0 0 1px rgb(34 197 94 / 0.5), 0 8px 24px -10px rgb(34 197 94 / 0.55);
+  /* Layering scale: content < sticky nav < assistant dock < skip link */
+  --z-nav: 40;
+  --z-dock: 50;
+  --z-overlay: 60;
+  color-scheme: dark;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-background-raised: var(--background-raised);
+  --color-background-inset: var(--background-inset);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-strip: var(--surface-strip);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-foreground-soft: var(--foreground-soft);
+  --color-muted: var(--muted);
+  --color-border-soft: var(--border-soft);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-on-accent: var(--on-accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-line: var(--accent-line);
+  --color-warn: var(--warn);
+  --color-danger: var(--danger);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --font-sans: var(--font-plex), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* The phone layout applies up to and including 640px, so sm starts at 641px. */
+  --breakpoint-sm: 40.0625rem;
+
+  --radius-control: 10px;
+  --radius-card: 14px;
+
+  --shadow-card: var(--shadow-card);
+  --shadow-float: var(--shadow-float);
+  --shadow-accent: var(--shadow-accent);
+
+  --ease-settle: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --duration-slow: 500ms;
+
+  --animate-ping-soft: ping-soft 2.4s cubic-bezier(0.2, 0.7, 0.2, 1) infinite;
+
+  --animate-schematic-flow: schematic-flow 1.8s linear infinite;
+
+  @keyframes schematic-flow {
+    to {
+      stroke-dashoffset: -20;
+    }
+  }
+
+  @keyframes ping-soft {
+    0% {
+      transform: scale(0.6);
+      opacity: 0.7;
+    }
+    80%,
+    100% {
+      transform: scale(1.6);
+      opacity: 0;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground-soft);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* Headings are set in the mono face; body copy stays in the sans. */
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--foreground);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  ::selection {
+    background: rgb(34 197 94 / 0.3);
+    color: var(--foreground);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus-ring, var(--accent));
+    outline-offset: 3px;
+  }
+
+  button,
+  a,
+  [role="button"] {
+    touch-action: manipulation;
+  }
+
+  button:not(:disabled),
+  [role="button"] {
+    cursor: pointer;
+  }
+}
+
+@layer utilities {
+  /* Small green mono caption with a leading rule, used above section titles. */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--accent);
+  }
+  .eyebrow::before {
+    content: "";
+    width: 1.5rem;
+    height: 1px;
+    background: currentColor;
+  }
+
+  /* Entrance used by <Reveal>. The final state is the default; the hidden
+     start state only applies once the inline script in <head> has marked the
+     document with data-js, so content is readable with scripting off. */
+  .reveal {
+    transition:
+      opacity var(--duration-slow) var(--ease-settle),
+      transform var(--duration-slow) var(--ease-settle);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  html[data-js] .reveal:not([data-shown="true"]) {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html[data-js] .reveal:not([data-shown="true"]) {
+    opacity: 1;
+    transform: none;
+  }
 }
